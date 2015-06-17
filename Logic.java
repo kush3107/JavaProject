@@ -7,8 +7,8 @@ public class Logic {
 
 		switch (choice) {
 		case 1:
-			ob2.display();
-			if (ob1.height > ob2.height) {
+			// ob2.display();
+			if (ob1.rank < ob2.rank) {
 
 				return 0;
 			} else {
@@ -18,8 +18,8 @@ public class Logic {
 			}
 
 		case 2:
-			ob2.display();
-			if (ob1.weight > ob2.weight) {
+			// ob2.display();
+			if (ob1.height > ob2.height) {
 				// ob1.incrementMatchesWon();
 
 				return 0;
@@ -32,7 +32,7 @@ public class Logic {
 			}
 
 		case 3:
-			if (ob1.rank < ob2.rank) {
+			if (ob1.weight > ob2.weight) {
 				// ob1.incrementMatchesWon();
 
 				return 0;

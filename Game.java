@@ -22,45 +22,54 @@ public class Game {
 		for (Wrestler someWrestler : wrestlers) {
 			if (index % 2 == 0) {
 				firstPlayer.currentDeck.add(someWrestler);
-				counter = 0;
+
 			} else {
 				secondPlayer.currentDeck.add(someWrestler);
-				counter = 1;
+
 			}
 			index++;
 		}
 		int playerOneCards = User.numberOfCards(firstPlayer.currentDeck);
 		int playerTwoCards = User.numberOfCards(secondPlayer.currentDeck);
 		int toss = (int) Math.random() * 2;
-		lastIndexOne = firstPlayer.currentDeck.size() - 1;
-		lastIndexTwo = secondPlayer.currentDeck.size() - 1;
+		lastIndexOne = playerOneCards - 1;
+		lastIndexTwo = playerTwoCards - 1;
 		if (toss == 0) {
 			System.out.println("Its " + firstPlayer.name + " turn");
 			firstPlayer.currentDeck.get(lastIndexOne).display();
+			counter = 0;
 		} else {
 			System.out.println("Its " + secondPlayer.name + " turn");
 			secondPlayer.currentDeck.get(lastIndexTwo).display();
+			counter = 1;
 		}
 		System.out
 				.println("Which attribute do you want to play one?\n1 : Rank\n2 : Height\n3 : Weight");
 		ob.hasNextInt();
 		int choice = ob.nextInt();
+		if (toss == 0)
+			secondPlayer.currentDeck.get(lastIndexTwo).display();
+		else
+			firstPlayer.currentDeck.get(lastIndexOne).display();
+		// while loop
 		while (playerOneCards != 0 && playerTwoCards != 0) {
-			if (counter % 2 == 0 && (toss != 0 || toss != 1)) {
+			if (counter % 2 == 0 && toss != 0 && toss != 1) {
 				System.out.println("Its " + firstPlayer.name + " turn");
 				firstPlayer.currentDeck.get(lastIndexOne).display();
 				System.out
 						.println("Which attribute do you want to play one?\n1 : Rank\n2 : Height\n3 : Weight");
 				ob.hasNextInt();
 				choice = ob.nextInt();
+				secondPlayer.currentDeck.get(lastIndexTwo).display();
 
-			} else if (counter % 2 != 0 && (toss != 0 || toss != 1)) {
+			} else if (counter % 2 != 0 && toss != 0 && toss != 1) {
 				System.out.println("Its " + secondPlayer.name + " turn");
 				secondPlayer.currentDeck.get(lastIndexTwo).display();
 				System.out
 						.println("Which attribute do you want to play one?\n1 : Rank\n2 : Height\n3 : Weight");
 				ob.hasNextInt();
 				choice = ob.nextInt();
+				firstPlayer.currentDeck.get(lastIndexOne).display();
 
 			}
 			win = Logic.play(choice, firstPlayer.currentDeck.get(lastIndexOne),
@@ -91,5 +100,6 @@ public class Game {
 		if (playerTwoCards == 0) {
 			System.out.println(firstPlayer.name + " has won the game");
 		}
+		ob.close();
 	}
 }
