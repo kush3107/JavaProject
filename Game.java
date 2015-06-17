@@ -1,80 +1,95 @@
 package com.kupra.wrestling;
+
 import java.util.*;
 
 public class Game {
-	public static void main(String[] args){
+	public static void main(String[] args) {
+		int lastIndexOne, lastIndexTwo, counter = 0, win;
 		List<Wrestler> wrestlers = Wrestler.deck();
+		User firstPlayer = new User();
+		User secondPlayer = new User();
+		Scanner ob = new Scanner(System.in);
+		System.out.println("Enter name of first player");
+		ob.hasNext();
+		String playerOneName = ob.next();
+		firstPlayer.name = playerOneName;
+		System.out.println("Enter name of second player");
+		ob.hasNext();
+		String playerTwoName = ob.next();
+		secondPlayer.name = playerTwoName;
 		Collections.shuffle(wrestlers);
-		List<Wrestler> playerOne=new ArrayList<Wrestler>();
-		List<Wrestler> playerTwo=new ArrayList<Wrestler>();
-		int index=0;
-		for(Wrestler someWrestler : wrestlers){
-			if(index%2 == 0){
-		playerOne.add(someWrestler);
-		}else{
-			playerTwo.add(someWrestler);
-		}
+		int index = 0;
+		for (Wrestler someWrestler : wrestlers) {
+			if (index % 2 == 0) {
+				firstPlayer.currentDeck.add(someWrestler);
+				counter = 0;
+			} else {
+				secondPlayer.currentDeck.add(someWrestler);
+				counter = 1;
+			}
 			index++;
 		}
-			int lastIndexOne=playerOne.size()-1;
-			int lastIndexTwo=playerTwo.size()-1;
-			//while loop
-		while(playerOne.size()!=0 && playerTwo.size()!=0){
-		int toss=(int)(Math.random()*2);
-		
-		if(toss==0&&playerOne.size()==3){
-			System.out.println("Its Player1's turn");
-			playerOne.get(lastIndexOne).display();
+		int playerOneCards = User.numberOfCards(firstPlayer.currentDeck);
+		int playerTwoCards = User.numberOfCards(secondPlayer.currentDeck);
+		int toss = (int) Math.random() * 2;
+		lastIndexOne = firstPlayer.currentDeck.size() - 1;
+		lastIndexTwo = secondPlayer.currentDeck.size() - 1;
+		if (toss == 0) {
+			System.out.println("Its " + firstPlayer.name + " turn");
+			firstPlayer.currentDeck.get(lastIndexOne).display();
+		} else {
+			System.out.println("Its " + secondPlayer.name + " turn");
+			secondPlayer.currentDeck.get(lastIndexTwo).display();
 		}
-		else if(toss!=0&&playerOne.size()==3){
-			System.out.println("Its Player2's turn");
-			playerTwo.get(lastIndexTwo).display();
-		
-		}
-		else if(playerOne.size()>3){
-			System.out.println("Its Player1's turn");
-			playerOne.get(lastIndexOne).display();
-		
-		}
-		else{
-			System.out.println("Its Player2's turn");
-			playerTwo.get(lastIndexTwo).display();
-		}
-		System.out.println("Which attribute do you want to play with?");
-		System.out.println("1. Height\n2. Weight\n3.Rank");
-		Scanner ob=new Scanner(System.in);
+		System.out
+				.println("Which attribute do you want to play one?\n1 : Rank\n2 : Height\n3 : Weight");
 		ob.hasNextInt();
-		int userChoice=ob.nextInt();
-		int check=(playerOne.get(lastIndexOne)).play(userChoice, (playerTwo.get(lastIndexTwo)));
-		if(check==0){
-			Wrestler ob2=playerTwo.remove(lastIndexTwo);
-			playerOne.add(ob2);
-		}else if(check==5){
-			System.out.println("Please try again!");
-			continue;
+		int choice = ob.nextInt();
+		while (playerOneCards != 0 && playerTwoCards != 0) {
+			if (counter % 2 == 0 && (toss != 0 || toss != 1)) {
+				System.out.println("Its " + firstPlayer.name + " turn");
+				firstPlayer.currentDeck.get(lastIndexOne).display();
+				System.out
+						.println("Which attribute do you want to play one?\n1 : Rank\n2 : Height\n3 : Weight");
+				ob.hasNextInt();
+				choice = ob.nextInt();
+
+			} else if (counter % 2 != 0 && (toss != 0 || toss != 1)) {
+				System.out.println("Its " + secondPlayer.name + " turn");
+				secondPlayer.currentDeck.get(lastIndexTwo).display();
+				System.out
+						.println("Which attribute do you want to play one?\n1 : Rank\n2 : Height\n3 : Weight");
+				ob.hasNextInt();
+				choice = ob.nextInt();
+
+			}
+			win = Logic.play(choice, firstPlayer.currentDeck.get(lastIndexOne),
+					secondPlayer.currentDeck.get(lastIndexTwo));
+			if (win == 0) {
+				Wrestler removedCard = secondPlayer.currentDeck
+						.remove(lastIndexTwo);
+				firstPlayer.currentDeck.add(removedCard);
+				System.out.println(firstPlayer.name + " has won this round.");
+			} else {
+				Wrestler removedCard = firstPlayer.currentDeck
+						.remove(lastIndexOne);
+				secondPlayer.currentDeck.add(removedCard);
+				System.out.println(secondPlayer.name + " has won this round.");
+			}
+			toss = 5;
+			playerOneCards = User.numberOfCards(firstPlayer.currentDeck);
+			playerTwoCards = User.numberOfCards(secondPlayer.currentDeck);
+			Collections.shuffle(firstPlayer.currentDeck);
+			Collections.shuffle(secondPlayer.currentDeck);
+			counter++;
+			lastIndexOne = playerOneCards - 1;
+			lastIndexTwo = playerTwoCards - 1;
 		}
-		else{
-			Wrestler ob1=playerOne.remove(lastIndexOne);
-			playerTwo.add(ob1);
+		if (playerOneCards == 0) {
+			System.out.println(secondPlayer.name + " has won the game");
 		}
-		if(playerOne.size()!=0)
-		lastIndexOne--;
-		if(playerTwo.size()!=0)
-		lastIndexTwo--;
-		}
-		System.out.println("Thanks for playing!");
-		if (playerOne.size()==0)
-		{
-			
-			System.out.println("Player2 has won the game!");
-			
-		}
-		if(playerTwo.size()==0){
-			System.out.println("Player1 has won the game!");
-		}
-		
+		if (playerTwoCards == 0) {
+			System.out.println(firstPlayer.name + " has won the game");
 		}
 	}
-
-
-
+}
